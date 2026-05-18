@@ -1,15 +1,19 @@
 <?php
+session_start();
 include "db.php";
 
-$id = $_GET['id'];
-$msg = $_GET['msg']; // simple version
-$status = $_GET['status'];
+if (!isset($_SESSION['role']) || ($_SESSION['role'] != 1 && $_SESSION['role'] != 2)) {
+    die("Access Denied");
+}
 
-mysqli_query($conn,
-"UPDATE requests 
- SET status='$status',
- manager_message='$msg'
- WHERE id=$id");
+$id = intval($_GET['id']);
+$msg = isset($_GET['msg']) ? trim($_GET['msg']) : 'Approved';
+$status = isset($_GET['status']) ? trim($_GET['status']) : 'Approved';
+
+$stmt = mysqli_prepare($conn, "UPDATE requests SET status = ?, manager_message = ? WHERE id = ?");
+mysqli_stmt_bind_param($stmt, "ssi", $status, $msg, $id);
+mysqli_stmt_execute($stmt);
 
 header("Location: view_requests.php");
+exit;
 ?>
