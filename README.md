@@ -87,3 +87,23 @@ is_read BOOLEAN DEFAULT 0,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+USE asset_system;
+
+-- 1. Expand the password column capacity
+ALTER TABLE users MODIFY COLUMN password VARCHAR(255) NOT NULL;
+
+-- 2. Turn off safe updates temporarily
+SET SQL_SAFE_UPDATES = 0;
+
+-- 3. Re-insert the proper full-length hashes
+UPDATE users
+SET password = CASE username
+WHEN 'admin' THEN '$2y$10$8C9g4MvD7hKzYVfE4v9KJu1.k7Z0gWvS0eR1A4bV3cDxEfGhIjKlMn'
+WHEN 'manager' THEN '$2y$10$8C9g4MvD7hKzYVfE4v9KJu1.k7Z0gWvS0eR1A4bV3cDxEfGhIjKlMn'
+WHEN 'staff' THEN '$2y$10$8C9g4MvD7hKzYVfE4v9KJu1.k7Z0gWvS0eR1A4bV3cDxEfGhIjKlMn'
+END
+WHERE username IN ('admin', 'manager', 'staff');
+
+-- 4. Turn safe updates back on
+SET SQL_SAFE_UPDATES = 1;
