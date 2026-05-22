@@ -1,9 +1,13 @@
 <?php
-
+// ============================================================
+//  db.php — Database Connection
+//  Place this file in your project root folder
+//  e.g. C:/xampp/htdocs/asset_management/db.php
+// ============================================================
 
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');      
-define('DB_PASS', '1234');         
+define('DB_USER', 'root');        // default XAMPP MySQL user
+define('DB_PASS', '');            // default XAMPP MySQL password (empty)
 define('DB_NAME', 'asset_management');
 
 // Create connection using MySQLi
